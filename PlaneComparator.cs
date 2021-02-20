@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using LightIntensityAnalyzer.Imaging;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,9 +10,12 @@ namespace LightIntensityAnalyzer
 {
     public class PlaneComparator
     {
-        public async Task<BrightnessReport> CompareBackAndFrontAsync(SoftwareBitmap image, IEnumerable<DetectedFace> faces)
+        public async Task<BrightnessReport> CompareBackAndFrontAsync(SoftwareBitmap image,
+                                                                     IEnumerable<DetectedFace> faces,
+                                                                     (IEnumerable<Pixel> front, IEnumerable<Pixel> back) planes)
         {
-            var (front, back) = await GetAvgBrightness(image, faces);
+            var (frontPixels, backPixels) = await GetFrontBackPixelsAsync(image, faces);
+            var (front, back) = GetAvgBrightness(frontPixels, backPixels);
             if (front is null || back is null)
                 return null;
             return Compare(front, back);
@@ -28,7 +31,16 @@ namespace LightIntensityAnalyzer
             return new BrightnessReport(difference, text.ToString());
         }
 
-        public static async Task<(Brightness, Brightness)> GetAvgBrightness(SoftwareBitmap image, IEnumerable<DetectedFace> faces)
+        public static (Brightness, Brightness) GetAvgBrightness(IEnumerable<Pixel> front, IEnumerable<Pixel> back)
+        {
+            var avgFront = GetAvg(front);
+            if (avgFront is null)
+                return (null, null);
+            var avgBack = GetAvg(back);
+            return (avgFront, avgBack);
+        }
+
+        public static async Task<(IEnumerable<Pixel>, IEnumerable<Pixel>)> GetFrontBackPixelsAsync(SoftwareBitmap image, IEnumerable<DetectedFace> faces)
         {
             var backPixels = new List<Pixel>();
             var frontPixels = new List<Pixel>();
@@ -46,11 +58,7 @@ namespace LightIntensityAnalyzer
                     frontPixels.Add(pixel);
                 else backPixels.Add(pixel);
             }
-            var avgFront = GetAvg(frontPixels);
-            if (avgFront is null)
-                return (null, null);
-            var avgBack = GetAvg(backPixels);
-            return (avgFront, avgBack);
+            return (frontPixels, backPixels);
         }
 
         private static Brightness GetAvg(IEnumerable<Pixel> pixels)

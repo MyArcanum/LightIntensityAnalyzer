@@ -1,4 +1,4 @@
-﻿namespace LightIntensityAnalyzer
+﻿namespace LightIntensityAnalyzer.Imaging
 {
     public class Pixel
     {
@@ -20,12 +20,18 @@
             get
             {
                 if (!_Intensity.HasValue)
-                    _Intensity = (byte)(0.2126 * R + 0.7152 * G + 0.0722 * B);
+                    _Intensity = (byte)(0.299 * R + 0.587 * G + 0.114 * B);
                 return (byte)_Intensity;
             }
         }
 
-        public bool IsAboveThreshold(byte threshold) => Intensity > threshold;
+        public Pixel ToGray()
+        {
+            var shade = Intensity;
+            var gray = new Pixel();
+            gray.R = gray.G = gray.B = shade;
+            return gray;
+        }
 
         private byte? _Intensity;
     }

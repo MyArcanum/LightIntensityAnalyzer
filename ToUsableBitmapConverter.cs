@@ -1,6 +1,6 @@
-﻿using System;
+﻿using LightIntensityAnalyzer.Imaging;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,7 +11,7 @@ namespace LightIntensityAnalyzer
 {
     public static class ToUsableBitmapConverter
     {
-        public static async Task<IEnumerable<Pixel>> Convert(SoftwareBitmap softwareBitmap)
+        public static async Task<Image> Convert(SoftwareBitmap softwareBitmap)
         {
             using (var stream = new InMemoryRandomAccessStream())
             {
@@ -22,7 +22,7 @@ namespace LightIntensityAnalyzer
             }
         }
 
-        public static async Task<IEnumerable<Pixel>> SelectPixels(SoftwareBitmap image, Stream bufferStream)
+        public static async Task<Image> SelectPixels(SoftwareBitmap image, Stream bufferStream)
         {
             var n = image.PixelHeight * image.PixelWidth;
             byte[] buffer;
@@ -50,7 +50,7 @@ namespace LightIntensityAnalyzer
                     });
                 }
             }
-            return pixels;
+            return new Image(image.PixelHeight, pixels);
         }
 
     }

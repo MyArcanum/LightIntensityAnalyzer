@@ -119,17 +119,20 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BackSourcesDetector.cs" />
     <Compile Include="Brightness.cs" />
     <Compile Include="BrightnessReport.cs" />
+    <Compile Include="Image\Image.cs" />
     <Compile Include="PictureManagement\FaceManager.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="PictureManagement\PhotoPicker.cs" />
     <Compile Include="PictureManagement\PictureConverter.cs" />
-    <Compile Include="Pixel.cs" />
+    <Compile Include="Image\Pixel.cs" />
     <Compile Include="PlaneComparator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Threshold.cs" />
     <Compile Include="ToUsableBitmapConverter.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -160,9 +163,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.11</Version>
-    </PackageReference>
-    <PackageReference Include="SixLabors.ImageSharp">
-      <Version>1.0.2</Version>
     </PackageReference>
     <PackageReference Include="System.Drawing.Common">
       <Version>5.0.0</Version>

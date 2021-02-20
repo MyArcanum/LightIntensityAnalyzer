@@ -77,7 +77,12 @@ namespace LightIntensityAnalyzer
                 return;
             // 4) Compare back and front planes
             var comparator = new PlaneComparator();
-            var comparisonReport = await comparator.CompareBackAndFrontAsync(photo, faces);
+
+            var (frontPixels, backPixels) = await PlaneComparator.GetFrontBackPixelsAsync(photo, faces);
+            var comparisonReport = await comparator.CompareBackAndFrontAsync(photo, faces, (frontPixels, backPixels));
+            // 5) Are there strong light sources in background?
+            var backLightDetector = new BackSourcesDetector();
+            var sourcesPresent = backLightDetector.Detect(backPixels);
         }
 
         private MediaCapture Capture;
