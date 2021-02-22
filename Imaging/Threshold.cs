@@ -1,19 +1,16 @@
-﻿using LightIntensityAnalyzer.Imaging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LightIntensityAnalyzer
+namespace LightIntensityAnalyzer.Imaging
 {
     public static class Threshold
     {
-        public static Image Apply(Image inputImage)
+        public static Image Apply(Image grayImage)
         {
-            var grayImg = Grayscale(inputImage);
-            var threshold = GetOtsuThreshold(grayImg);
-            var binaryImg = ApplyThreshold(grayImg, threshold);
+            var threshold = GetOtsuThreshold(grayImage);
+            var binaryImg = ApplyThreshold(grayImage, threshold);
+            return binaryImg;
         }
 
         private static Image ApplyThreshold(Image grayImg, int thresholdValue)
@@ -38,7 +35,7 @@ namespace LightIntensityAnalyzer
             return new Image(grayImg.H, binaryPixels);
         }
 
-        private static Image Grayscale(Image img)
+        public static Image Grayscale(Image img)
         {
             var greys = new List<Pixel>();
 
@@ -98,7 +95,6 @@ namespace LightIntensityAnalyzer
 
         private static int GetOtsuThreshold(Image img)
         {
-            byte t = 0;
             var vet = new float[256];
             vet.Initialize();
 

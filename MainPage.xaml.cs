@@ -1,4 +1,5 @@
-﻿using LightIntensityAnalyzer.PictureManagement;
+﻿using LightIntensityAnalyzer.Imaging;
+using LightIntensityAnalyzer.PictureManagement;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -81,8 +82,10 @@ namespace LightIntensityAnalyzer
             var (frontPixels, backPixels) = await PlaneComparator.GetFrontBackPixelsAsync(photo, faces);
             var comparisonReport = await comparator.CompareBackAndFrontAsync(photo, faces, (frontPixels, backPixels));
             // 5) Are there strong light sources in background?
-            var backLightDetector = new BackSourcesDetector();
-            var sourcesPresent = backLightDetector.Detect(backPixels);
+            var sourcesDetector = new SourcesDetector();
+            var image = await ToUsableBitmapConverter.Convert(photo);
+            var (grayImg, binaryImg) = sourcesDetector.Detect(image);
+            //sourcesDetector.FindCenterFront
         }
 
         private MediaCapture Capture;

@@ -119,21 +119,21 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BackSourcesDetector.cs" />
+    <Compile Include="SourcesDetector.cs" />
     <Compile Include="Brightness.cs" />
     <Compile Include="BrightnessReport.cs" />
-    <Compile Include="Image\Image.cs" />
+    <Compile Include="Imaging\Image.cs" />
     <Compile Include="PictureManagement\FaceManager.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="PictureManagement\PhotoPicker.cs" />
     <Compile Include="PictureManagement\PictureConverter.cs" />
-    <Compile Include="Image\Pixel.cs" />
+    <Compile Include="Imaging\Pixel.cs" />
     <Compile Include="PlaneComparator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Threshold.cs" />
-    <Compile Include="ToUsableBitmapConverter.cs" />
+    <Compile Include="Imaging\Threshold.cs" />
+    <Compile Include="Imaging\ToUsableBitmapConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

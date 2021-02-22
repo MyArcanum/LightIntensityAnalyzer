@@ -1,5 +1,8 @@
 ﻿namespace LightIntensityAnalyzer.Imaging
 {
+    /// <summary>
+    /// Representation of the dot of a picture
+    /// </summary>
     public class Pixel
     {
         /// <summary>
@@ -12,9 +15,22 @@
         /// </summary>
         public int Y { get; set; }
 
+        /// <summary>
+        /// Red channel 
+        /// </summary>
         public byte R { get; set; }
+        /// <summary>
+        /// Green channel 
+        /// </summary>
         public byte G { get; set; }
+        /// <summary>
+        /// Blue channel 
+        /// </summary>
         public byte B { get; set; }
+
+        /// <summary>
+        /// Intensity of pixel according to human color perception
+        /// </summary>
         public byte Intensity
         {
             get
@@ -25,6 +41,10 @@
             }
         }
 
+        /// <summary>
+        /// Converts colorful pixel to grayscale shade
+        /// </summary>
+        /// <returns></returns>
         public Pixel ToGray()
         {
             var shade = Intensity;

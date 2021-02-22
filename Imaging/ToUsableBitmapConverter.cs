@@ -1,5 +1,4 @@
-﻿using LightIntensityAnalyzer.Imaging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,7 +6,7 @@ using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 
-namespace LightIntensityAnalyzer
+namespace LightIntensityAnalyzer.Imaging
 {
     public static class ToUsableBitmapConverter
     {
