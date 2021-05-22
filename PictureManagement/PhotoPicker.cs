@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Windows.Graphics.Imaging;
+using Windows.Media.MediaProperties;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 

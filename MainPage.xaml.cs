@@ -1,6 +1,7 @@
 ﻿using LightIntensityAnalyzer.Imaging;
 using LightIntensityAnalyzer.PictureManagement;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
@@ -44,7 +45,7 @@ namespace LightIntensityAnalyzer
             await mediaCaptureMgr.StartPreviewAsync();
         }
 
-        private async Task<SoftwareBitmap> TakePhoto()
+        private async Task<SoftwareBitmap> TakePhotoFromCamera()
         {
             // Prepare and capture photo
             var properties = ImageEncodingProperties.CreateUncompressed(MediaPixelFormat.Bgra8);
@@ -57,37 +58,53 @@ namespace LightIntensityAnalyzer
             return softwareBitmap;
         }
 
+        private async Task<SoftwareBitmap> TakePhoto(bool fromFile = false)
+        {
+            if(!fromFile)
+                return await TakePhotoFromCamera();
+
+            var picker = new PhotoPicker();
+            var rawPicture = await picker.SelectPhoto();
+            if (rawPicture == null)
+                return null;
+            return await Converter.DecodeToBitmap(rawPicture);
+        }
+
         public async void RunFlow()
         {
-            // 1) Pick a photo (temporarily - after upgrade it will take frames from video)
-            //var picker = new PhotoPicker();
-            //var rawPicture = await picker.SelectPhoto();
-            //if (rawPicture == null)
-            //    return;
-            // 2) Convert to appropriate type to process
-            var converter = new PictureConverter();
-            // Decoder is only one that can access pixels
-            //var decodedPicture = await converter.DecodeToBitmap(rawPicture);
-
+            // 1) Pick a photo
             var photo = await TakePhoto();
-            var convertedPicture = converter.ConvertToGray8(photo);//decodedPicture);
+            if (photo is null)
+                return;
+
+            // 2) Convert to appropriate type to process
+            var convertedPicture = Converter.ConvertToGray8(photo);
+
             // 3) Find faces
             var faceManager = new FaceManager();
-            var faces = await faceManager.DetectFacesAsync(convertedPicture, photo);//decodedPicture);
+            var faces = await faceManager.DetectFacesAsync(convertedPicture, photo);
             if (!faces.Any())
                 return;
+
             // 4) Compare back and front planes
             var comparator = new PlaneComparator();
 
             var (frontPixels, backPixels) = await PlaneComparator.GetFrontBackPixelsAsync(photo, faces);
-            var comparisonReport = await comparator.CompareBackAndFrontAsync(photo, faces, (frontPixels, backPixels));
+            var contrastReport = await comparator.CompareBackAndFrontAsync(photo, faces, (frontPixels, backPixels));
+
             // 5) Are there strong light sources in background?
             var sourcesDetector = new SourcesDetector();
             var image = await ToUsableBitmapConverter.Convert(photo);
             var (grayImg, binaryImg) = sourcesDetector.Detect(image);
+
             //sourcesDetector.FindCenterFront
+
+            var messages = new List<string> { contrastReport.ToString(),
+                                              "You are blinded! Switch off the lamp in front of you!"};
+            Notificator.Display(messages);
         }
 
         private MediaCapture Capture;
+        private PictureConverter Converter = new PictureConverter();
     }
 }

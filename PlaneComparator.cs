@@ -1,4 +1,5 @@
 ﻿using LightIntensityAnalyzer.Imaging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,11 +25,8 @@ namespace LightIntensityAnalyzer
         private BrightnessReport Compare(Brightness front, Brightness back)
         {
             var difference = front - back;
-            var text = new StringBuilder();
-            if (difference > MaxBrightnessDifference)
-                text.Append("Bad");
-            else text.Append("Good");
-            return new BrightnessReport(difference, text.ToString());
+            var isBad = Math.Abs(difference.Intensity) > MaxBrightnessDifference;
+            return new BrightnessReport(difference, isBad);
         }
 
         public static (Brightness, Brightness) GetAvgBrightness(IEnumerable<Pixel> front, IEnumerable<Pixel> back)

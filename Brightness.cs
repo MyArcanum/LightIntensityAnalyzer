@@ -19,8 +19,11 @@ namespace LightIntensityAnalyzer
         }
 
         public static bool operator >(Brightness first, Brightness second) => first.Intensity > second.Intensity;
-
         public static bool operator <(Brightness first, Brightness second) => first.Intensity < second.Intensity;
+        public static bool operator >(Brightness first, double second) => first.Intensity > second;
+        public static bool operator <(Brightness first, double second) => first.Intensity < second;
+        public static bool operator >(double first, Brightness second) => first > second.Intensity;
+        public static bool operator <(double first, Brightness second) => first < second.Intensity;
 
         public readonly double Intensity;
     }

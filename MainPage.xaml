@@ -12,9 +12,9 @@
         <StackPanel>
             <CaptureElement x:Name="cameraFrame"         
                     Width="900"  Height="600"/>
-            <Button Name="PreviewBtn">Click me to see a preview</Button>
+            <Button Name="PreviewBtn">Preview</Button>
         </StackPanel>
-        <Button Content="Button" Name="DO"/>
+        <Button Content="Make photo" Name="DO" Margin="0,643,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Page>
