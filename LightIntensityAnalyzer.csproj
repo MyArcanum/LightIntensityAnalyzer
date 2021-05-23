@@ -119,11 +119,13 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Reports\BackSourcesReport.cs" />
     <Compile Include="Equation.cs" />
     <Compile Include="Notificator.cs" />
+    <Compile Include="Reports\Report.cs" />
     <Compile Include="SourcesDetector.cs" />
     <Compile Include="Brightness.cs" />
-    <Compile Include="BrightnessReport.cs" />
+    <Compile Include="Reports\BrightnessReport.cs" />
     <Compile Include="Imaging\Image.cs" />
     <Compile Include="PictureManagement\FaceManager.cs" />
     <Compile Include="MainPage.xaml.cs">

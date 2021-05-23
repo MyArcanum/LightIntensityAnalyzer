@@ -6,9 +6,11 @@ namespace LightIntensityAnalyzer.Imaging
 {
     public static class Threshold
     {
-        public static Image Apply(Image grayImage)
+        public static Image Apply(Image image, int thresholdOverride = -1)
         {
-            var threshold = GetOtsuThreshold(grayImage);
+            var grayImage = Grayscale(image);
+            // if override present, use it, else - count new
+            var threshold = thresholdOverride < 0 ? GetOtsuThreshold(grayImage) : thresholdOverride;
             var binaryImg = ApplyThreshold(grayImage, threshold);
             return binaryImg;
         }
@@ -26,7 +28,7 @@ namespace LightIntensityAnalyzer.Imaging
                 var binary = new Pixel();
                 binary.X = grayPixel.X;
                 binary.Y = grayPixel.Y;
-                if(grayPixel.Intensity * 3 > thresholdValue)
+                if(grayPixel.Intensity * 3 >= thresholdValue)
                     binary.R = binary.G = binary.B = 255;
                 else
                     binary.R = binary.G = binary.B = 0;
@@ -35,7 +37,7 @@ namespace LightIntensityAnalyzer.Imaging
             return new Image(grayImg.H, binaryPixels);
         }
 
-        public static Image Grayscale(Image img)
+        private static Image Grayscale(Image img)
         {
             var greys = new List<Pixel>();
 

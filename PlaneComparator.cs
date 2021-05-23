@@ -1,8 +1,8 @@
 ﻿using LightIntensityAnalyzer.Imaging;
+using LightIntensityAnalyzer.Reports;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
 using Windows.Media.FaceAnalysis;
@@ -11,21 +11,21 @@ namespace LightIntensityAnalyzer
 {
     public class PlaneComparator
     {
-        public async Task<BrightnessReport> CompareBackAndFrontAsync(SoftwareBitmap image,
-                                                                     IEnumerable<DetectedFace> faces,
-                                                                     (IEnumerable<Pixel> front, IEnumerable<Pixel> back) planes)
+        public static BrightnessReport CompareBackAndFrontAsync(//SoftwareBitmap image,
+                                                                     //IEnumerable<DetectedFace> faces,
+                                                                     (IEnumerable<Pixel> frontPixels, IEnumerable<Pixel> backPixels) planes)
         {
-            var (frontPixels, backPixels) = await GetFrontBackPixelsAsync(image, faces);
-            var (front, back) = GetAvgBrightness(frontPixels, backPixels);
+            //var (frontPixels, backPixels) = await GetFrontBackPixelsAsync(image, faces);
+            var (front, back) = GetAvgBrightness(planes.frontPixels, planes.backPixels);
             if (front is null || back is null)
                 return null;
             return Compare(front, back);
         }
 
-        private BrightnessReport Compare(Brightness front, Brightness back)
+        private static BrightnessReport Compare(Brightness front, Brightness back)
         {
             var difference = front - back;
-            var isBad = Math.Abs(difference.Intensity) > MaxBrightnessDifference;
+            var isBad = difference.Intensity > MaxBrightnessDifference;
             return new BrightnessReport(difference, isBad);
         }
 
@@ -51,10 +51,14 @@ namespace LightIntensityAnalyzer
                 {
                     isPixelForegound = pixel.Y > face.FaceBox.Y && pixel.Y < face.FaceBox.Y + face.FaceBox.Height
                                      && pixel.X > face.FaceBox.X && pixel.X < face.FaceBox.X + face.FaceBox.Width;
+                    if (isPixelForegound)
+                    {
+                        frontPixels.Add(pixel);
+                        break;
+                    }
                 }
-                if (isPixelForegound)
-                    frontPixels.Add(pixel);
-                else backPixels.Add(pixel);
+                if(!isPixelForegound)
+                    backPixels.Add(pixel);
             }
             return (frontPixels, backPixels);
         }
@@ -63,13 +67,14 @@ namespace LightIntensityAnalyzer
         {
             if (!pixels.Any())
                 return null;
-            var avgBrightness = pixels.Select(pixel => (int)pixel.Intensity).Average();
+            var avgBrightness = pixels.Average(p => p.Intensity);
+            //var avgBrightness = pixels.Select(pixel => (int)pixel.Intensity).Average();
             return new Brightness(avgBrightness);
         }
 
         // declares horisontal dinstance between piels to analyze
         private static readonly int PixelRate = 10;
 
-        private readonly Brightness MaxBrightnessDifference = new Brightness(100f);
+        private static readonly Brightness MaxBrightnessDifference = new Brightness(20f);
     }
 }

@@ -47,9 +47,10 @@
         /// <returns></returns>
         public Pixel ToGray()
         {
-            var shade = Intensity;
             var gray = new Pixel();
-            gray.R = gray.G = gray.B = shade;
+            gray.X = X;
+            gray.Y = Y;
+            gray._Intensity = gray.R = gray.G = gray.B = Intensity;
             return gray;
         }
 

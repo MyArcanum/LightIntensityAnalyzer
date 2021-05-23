@@ -1,5 +1,6 @@
 ﻿using LightIntensityAnalyzer.Imaging;
 using LightIntensityAnalyzer.PictureManagement;
+using LightIntensityAnalyzer.Reports;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,21 +88,23 @@ namespace LightIntensityAnalyzer
                 return;
 
             // 4) Compare back and front planes
-            var comparator = new PlaneComparator();
-
             var (frontPixels, backPixels) = await PlaneComparator.GetFrontBackPixelsAsync(photo, faces);
-            var contrastReport = await comparator.CompareBackAndFrontAsync(photo, faces, (frontPixels, backPixels));
+            var contrastReport = PlaneComparator.CompareBackAndFrontAsync((frontPixels, backPixels));
 
             // 5) Are there strong light sources in background?
-            var sourcesDetector = new SourcesDetector();
             var image = await ToUsableBitmapConverter.Convert(photo);
-            var (grayImg, binaryImg) = sourcesDetector.Detect(image);
+            var thresholdOverride = 255*3;
+            var binaryImage = SourcesDetector.GetBinary(image, thresholdOverride);
+            var backLightReport = SourcesDetector.AnalyzeBackground(binaryImage, frontPixels);
 
-            //sourcesDetector.FindCenterFront
+            // 6) Find lights in eyes
 
-            var messages = new List<string> { contrastReport.ToString(),
-                                              "You are blinded! Switch off the lamp in front of you!"};
-            Notificator.Display(messages);
+            // 7) Combine messages and push notification
+            var messages = new List<Report> { contrastReport,
+                                              backLightReport
+                                              }; //"You are blinded! Switch off the lamp in front of you!"
+            if (!messages.All(m => m.IsEmpty()))
+                Notificator.Display(messages.Select(m => m.ToString()));
         }
 
         private MediaCapture Capture;

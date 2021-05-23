@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LightIntensityAnalyzer.Imaging
 {
-    public class Image : IEnumerable<Pixel>, IEnumerator<Pixel>
+    public class Image : IEnumerable<Pixel>//, IEnumerator<Pixel>
     {
         //public Image(Pixel[][] pixels)
         //{
@@ -38,46 +38,46 @@ namespace LightIntensityAnalyzer.Imaging
                 throw new FormatException("Can not determine the picture width. Insufficient pixels amount according to height.");
             W = n / h;
             H = h;
-            Pixels = pixels;
+            Pixels = new List<Pixel>(pixels);
         }
 
         //public Pixel this[int i] => Pixels.ElementAt(i);
 
-        private IEnumerable<Pixel> Pixels;
+        private List<Pixel> Pixels;
         public readonly int H;
         public readonly int W;
 
         #region Enumrator + Enumerable
 
-        private int Position = -1;
+        //private int Position = -1;
 
-        public Pixel Current
-        {
-            get => Pixels.ElementAt(Position);
-        }
+        //public Pixel Current
+        //{
+        //    get => Pixels.ElementAt(Position);
+        //}
 
-        object IEnumerator.Current
-        {
-            get => Current;
-        }
+        //object IEnumerator.Current
+        //{
+        //    get => Current;
+        //}
 
-        public IEnumerator<Pixel> GetEnumerator() => this;
+        public IEnumerator<Pixel> GetEnumerator() => Pixels.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public bool MoveNext()
-        {
-            Position++;
-            return Position < Pixels.Count();
-        }
+        //public bool MoveNext()
+        //{
+        //    Position++;
+        //    return Position < Pixels.Count();
+        //}
 
-        public void Reset()
-        {
-            Position = -1;
-        }
+        //public void Reset()
+        //{
+        //    Position = -1;
+        //}
 
-        public void Dispose()
-        {  }
+        //public void Dispose()
+        //{  }
 
         #endregion
     }
