@@ -15,21 +15,9 @@ namespace LightIntensityAnalyzer
             return binaryImage;
         }
 
-        public static BackSourcesReport AnalyzeBackground(Image binary, IEnumerable<Pixel> frontPlane)
+        public static Report AnalyzeBackground(Image binary, IEnumerable<Pixel> frontPlane)
         {
-            //var frNum = frontPlane.Count();
-            //var frDN = frontPlane.Distinct().Count();
-
             var frontBin = new List<Pixel>();
-            //foreach(var fp in frontPlane)
-            //{
-            //    var front = binary.FirstOrDefault(p => p.X == fp.X
-            //                                        && p.Y == fp.Y);
-            //    if (front != null)
-            //        frontBin.Add(front);
-            //}
-            //var backPx = binary.Except(frontBin);
-            //var overThreshold = backPx.Where(bb => bb.Intensity > 0);
 
             var intense = binary.Where(b => b.Intensity > 0);
             foreach(var i in intense)
@@ -42,6 +30,21 @@ namespace LightIntensityAnalyzer
             var backPx = intense.Except(frontBin);
             var rate = (double)backPx.Count() / binary.Count();
             return new BackSourcesReport(rate > 0.01);
+        }
+
+        public static Report AnalyzeFace(Image binary, IEnumerable<Pixel> frontPlane)
+        {
+            var frontBin = new List<Pixel>();
+
+            var intense = binary.Where(b => b.Intensity > 0);
+            foreach (var i in intense)
+            {
+                var front = frontPlane.FirstOrDefault(p => p.X == i.X
+                                                        && p.Y == i.Y);
+                if (front != null)
+                    frontBin.Add(front);
+            }
+            return new FaceSourcesReport(frontBin.Any());
         }
 
         public (double x, double y) FindCenterFront(Image binaryImage, IEnumerable<DetectedFace> faces) 

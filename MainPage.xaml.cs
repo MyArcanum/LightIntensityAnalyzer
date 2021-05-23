@@ -68,7 +68,7 @@ namespace LightIntensityAnalyzer
             var rawPicture = await picker.SelectPhoto();
             if (rawPicture == null)
                 return null;
-            return await Converter.DecodeToBitmap(rawPicture);
+            return await PictureConverter.DecodeToBitmap(rawPicture);
         }
 
         public async void RunFlow()
@@ -79,11 +79,10 @@ namespace LightIntensityAnalyzer
                 return;
 
             // 2) Convert to appropriate type to process
-            var convertedPicture = Converter.ConvertToGray8(photo);
+            var convertedPicture = PictureConverter.ConvertToGray8(photo);
 
             // 3) Find faces
-            var faceManager = new FaceManager();
-            var faces = await faceManager.DetectFacesAsync(convertedPicture, photo);
+            var faces = await FaceManager.DetectFacesAsync(convertedPicture, photo);
             if (!faces.Any())
                 return;
 
@@ -98,16 +97,16 @@ namespace LightIntensityAnalyzer
             var backLightReport = SourcesDetector.AnalyzeBackground(binaryImage, frontPixels);
 
             // 6) Find lights in eyes
+            var faceLightReport = SourcesDetector.AnalyzeFace(binaryImage, frontPixels);
 
             // 7) Combine messages and push notification
             var messages = new List<Report> { contrastReport,
-                                              backLightReport
-                                              }; //"You are blinded! Switch off the lamp in front of you!"
+                                              backLightReport,
+                                              faceLightReport}; 
             if (!messages.All(m => m.IsEmpty()))
                 Notificator.Display(messages.Select(m => m.ToString()));
         }
 
         private MediaCapture Capture;
-        private PictureConverter Converter = new PictureConverter();
     }
 }

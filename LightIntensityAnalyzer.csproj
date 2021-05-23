@@ -122,6 +122,7 @@
     <Compile Include="Reports\BackSourcesReport.cs" />
     <Compile Include="Equation.cs" />
     <Compile Include="Notificator.cs" />
+    <Compile Include="Reports\FaceSourcesReport.cs" />
     <Compile Include="Reports\Report.cs" />
     <Compile Include="SourcesDetector.cs" />
     <Compile Include="Brightness.cs" />

@@ -7,7 +7,7 @@ namespace LightIntensityAnalyzer.PictureManagement
 {
     public sealed class PictureConverter
     {
-        public async Task<SoftwareBitmap> DecodeToBitmap(StorageFile picture)
+        public static async Task<SoftwareBitmap> DecodeToBitmap(StorageFile picture)
         {
             var fileStream = await picture.OpenAsync(FileAccessMode.Read);
             var decoder = await BitmapDecoder.CreateAsync(fileStream);
@@ -29,7 +29,7 @@ namespace LightIntensityAnalyzer.PictureManagement
                                                         ColorManagementMode.DoNotColorManage);
         }
 
-        public SoftwareBitmap ConvertToGray8(SoftwareBitmap sourceBitmap)
+        public static SoftwareBitmap ConvertToGray8(SoftwareBitmap sourceBitmap)
         {
             // Use FaceDetector.GetSupportedBitmapPixelFormats and IsBitmapPixelFormatSupported to dynamically
             // determine supported formats
